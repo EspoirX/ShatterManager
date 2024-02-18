@@ -15,7 +15,7 @@ Shatter 的意义在于：
 [![](https://jitpack.io/v/EspoirX/ShatterManager.svg)](https://jitpack.io/#EspoirX/ShatterManager)
 ```groovy
 dependencies {
-   implementation 'com.github.EspoirX:Shatter:v1.0.1'
+   implementation 'com.github.EspoirX:ShatterManager:v1.0.0'
 }
 ```
 
