@@ -78,7 +78,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
-使用方式或者代码讲解主要可以通过文章 或者代码中的 demo。  
+使用方式或者代码讲解主要可以通过文章 [《Android 复杂业务碎片化管理方案》]("https://juejin.cn/spost/7336750909508206604")  或者代码中的 demo。  
 虽然写得有点随便，但是看完后用法应该能懂吧？有问题可随时交流。
 
 
