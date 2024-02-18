@@ -1,0 +1,5 @@
+rootProject.name = "ShatterManager"
+include(":app")
+include ':shatter'
+
+ 
