@@ -20,6 +20,7 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
     private val newMsgFlow: MutableSharedFlow<ShatterEvent<*>> by lazy {
         MutableSharedFlow()
     }
+    internal val cache = ShatterCache()
 
     companion object {
         fun init(application: Application) {
@@ -82,7 +83,7 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
         shatter.containView = containView
         shatter.attachActivity(activity)
         shatters.add(shatter)
-        ShatterCache.putShatter(shatter)
+        cache.putShatter(shatter)
         shatter.attachChildShatter()
     }
 
@@ -90,15 +91,15 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
         shatter.shatterManager = this
         shatter.attachActivity(activity)
         shatters.add(shatter)
-        ShatterCache.putShatter(shatter)
+        cache.putShatter(shatter)
         shatter.attachChildShatter()
     }
 
     fun remove(shatter: Shatter) {
         shatters.find { it.getTag() == shatter.getTag() }?.childShatters?.forEach {
-            ShatterCache.removeShatter(it.getTag())
+            cache.removeShatter(it.getTag())
         }
-        ShatterCache.removeShatter(shatter.getTag())
+        cache.removeShatter(shatter.getTag())
         shatters.remove(shatter)
     }
 
@@ -109,7 +110,7 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
     }
 
     fun destroy() {
-        ShatterCache.clear()
+        cache.clear()
         shatters.forEach { it.childShatters.clear() }
         shatters.clear()
     }

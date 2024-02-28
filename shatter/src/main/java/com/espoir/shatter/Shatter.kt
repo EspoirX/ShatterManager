@@ -71,7 +71,7 @@ open class Shatter : ShatterLifecycleListener, LifecycleOwner {
         childShatters.forEach {
             it.shatterManager = shatterManager
             it.attachActivity(activity)
-            ShatterCache.putShatter(it)
+            shatterManager?.cache?.putShatter(it)
         }
     }
 
@@ -96,7 +96,7 @@ open class Shatter : ShatterLifecycleListener, LifecycleOwner {
 
     open fun <T : Shatter> findShatter(clazz: Class<T>): T? {
         val tag = clazz.simpleName
-        val shatter = ShatterCache.getShatter(tag)
+        val shatter = shatterManager?.cache?.getShatter(tag)
         if (shatter != null) {
             return shatter as T
         }

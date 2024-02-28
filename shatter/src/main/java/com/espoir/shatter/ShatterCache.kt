@@ -1,6 +1,6 @@
 package com.espoir.shatter
 
-object ShatterCache {
+class ShatterCache {
     private val cacheMap = hashMapOf<String, Shatter>()
 
     fun putShatter(shatter: Shatter) {
