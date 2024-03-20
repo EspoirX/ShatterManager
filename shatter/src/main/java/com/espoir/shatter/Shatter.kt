@@ -103,6 +103,14 @@ open class Shatter : ShatterLifecycleListener, LifecycleOwner {
         return null
     }
 
+    open fun saveData(key: String, value: Any?) {
+        shatterManager?.saveData(key, value)
+    }
+
+    open fun <T> getSaveData(key: String): T? {
+        return shatterManager?.getSaveData(key)
+    }
+
     open fun sendShatterEvent(key: String, data: Any? = null) {
         shatterManager?.sendShatterEvent(key, data)
     }

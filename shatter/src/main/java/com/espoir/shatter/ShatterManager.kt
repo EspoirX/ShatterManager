@@ -21,6 +21,10 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
         MutableSharedFlow()
     }
     internal val cache = ShatterCache()
+    /**
+     * 用来保存数据，方便各个Shatter获取
+     */
+    internal val dataSaveMap = hashMapOf<String, Any?>()
 
     companion object {
         fun init(application: Application) {
@@ -37,6 +41,14 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
                 shatters.forEach { it.onShatterEvent(event.key, event.data) }
             }
         }
+    }
+
+    open fun saveData(key: String, value: Any?) {
+        dataSaveMap[key] = value
+    }
+
+    open fun <T> getSaveData(key: String): T? {
+        return dataSaveMap.get(key) as? T?
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -103,14 +115,18 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
         shatters.remove(shatter)
     }
 
-    fun <T : Shatter> findShatter(clazz: Class<T>): T? {
+    open fun <T : Shatter> findShatter(clazz: Class<T>): T? {
         val tag = clazz.simpleName
-        val shatter = shatters.find { it.getTag() == tag } ?: return null
-        return shatter as T
+        val shatter = cache.getShatter(tag)
+        if (shatter != null) {
+            return shatter as T
+        }
+        return null
     }
 
     fun destroy() {
         cache.clear()
+        dataSaveMap.clear()
         shatters.forEach { it.childShatters.clear() }
         shatters.clear()
     }
