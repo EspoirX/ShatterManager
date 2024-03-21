@@ -81,6 +81,63 @@ override fun onCreate(savedInstanceState: Bundle?) {
 Shatter 和 ShatterManager 中都提供有  
 saveData 和  getSaveData 方法，方便存储临时数据，全局使用
 
+
+Shatter 复用之让 findShatter 支持接口：
+
+如果 2 个页面中有某个 Shatter 直接大部分逻辑相同只是部分不一样，比如某个点击事件不一样，某个文案不一样等。
+这时候我想这两个 Shatter 是可以复用的，只需要将不一样的地方抽出来即可。  
+
+那么抽出来自然想到是接口，比如点击按钮，toast不一样：
+```kotlin
+interface IShowToast{
+    fun show()
+}
+```
+
+那么我们将这个功能也写成一个 Shatter：
+```kotlin
+/** 功能模块 A */
+class ShowToastShatterAImpl :Shatter(),IShowToast{
+    fun show(){
+        Toast.show("fuck you")
+    }
+}
+
+/** 功能模块 B */
+class ShowToastShatterBImpl :Shatter(),IShowToast{
+    fun show(){
+        Toast.show("fuck you too")
+    }
+}
+```
+我们将接口实现单独抽出来一个 Shatter ，并添加到 ShatterManager 中，那么在 复用的 Shatter 就可以这样调用：
+
+页面A:
+```kotlin
+ shatterManager
+     .addShatter(HaHaShatter())
+     .addShatter(ShowToastShatterAImpl())
+```
+
+页面B:
+```kotlin
+ shatterManager
+     .addShatter(HaHaShatter())
+     .addShatter(ShowToastShatterBImpl())
+```
+
+```kotlin
+/** 比如 HaHaShatter 是两个页面都会用到的一个 Shatter */
+class HaHaShatter : Shatter {
+    val showToast get() = findShatter(IShowToast::class.java)
+}
+```
+
+直接在 findShatter 中传入接口类型，里面会查找到对应的实现类，这样复用的 HaHaShatter 逻辑就不需要修改，
+我们只关注实现类就行。
+
+
+
 使用方式或者代码讲解主要可以通过文章 [《Android 复杂业务碎片化管理方案》](https://juejin.cn/spost/7336750909508206604)  或者代码中的 demo。  
 虽然写得有点随便，但是看完后用法应该能懂吧？有问题可随时交流。
 

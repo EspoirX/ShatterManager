@@ -20,7 +20,8 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
     private val newMsgFlow: MutableSharedFlow<ShatterEvent<*>> by lazy {
         MutableSharedFlow()
     }
-    internal val cache = ShatterCache()
+    val shatterCache = ShatterCache()
+
     /**
      * 用来保存数据，方便各个Shatter获取
      */
@@ -95,7 +96,7 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
         shatter.containView = containView
         shatter.attachActivity(activity)
         shatters.add(shatter)
-        cache.putShatter(shatter)
+        shatterCache.putShatter(shatter)
         shatter.attachChildShatter()
     }
 
@@ -103,31 +104,45 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
         shatter.shatterManager = this
         shatter.attachActivity(activity)
         shatters.add(shatter)
-        cache.putShatter(shatter)
+        shatterCache.putShatter(shatter)
         shatter.attachChildShatter()
     }
 
     fun remove(shatter: Shatter) {
         shatters.find { it.getTag() == shatter.getTag() }?.childShatters?.forEach {
-            cache.removeShatter(it.getTag())
+            shatterCache.removeShatter(it.getTag())
         }
-        cache.removeShatter(shatter.getTag())
+        shatterCache.removeShatter(shatter.getTag())
         shatters.remove(shatter)
     }
 
-    open fun <T : Shatter> findShatter(clazz: Class<T>): T? {
-        val tag = clazz.simpleName
-        val shatter = cache.getShatter(tag)
-        if (shatter != null) {
-            return shatter as T
+    inline fun <reified T> findShatter(clazz: Class<T>): T? {
+        if (clazz.isInterface) {
+            val tag = clazz.simpleName
+            var shatter = shatterCache.getShatter(tag)
+            if (shatter == null) {
+                val pair = shatterCache.cacheMap.anyMap { it.value is T } ?: return null
+                shatter = pair.second
+                shatterCache.cacheMap[tag] = shatter
+            }
+            return shatter as? T?
+        } else {
+            val tag = clazz.simpleName
+            val shatter = shatterCache.getShatter(tag)
+            return shatter as? T?
         }
-        return null
     }
 
     fun destroy() {
-        cache.clear()
+        shatterCache.clear()
         dataSaveMap.clear()
         shatters.forEach { it.childShatters.clear() }
         shatters.clear()
     }
+}
+
+inline fun <K, V> Map<out K, V>.anyMap(predicate: (Map.Entry<K, V>) -> Boolean): Pair<K, V>? {
+    if (isEmpty()) return null
+    for (element in this) if (predicate(element)) return Pair(element.key, element.value)
+    return null
 }

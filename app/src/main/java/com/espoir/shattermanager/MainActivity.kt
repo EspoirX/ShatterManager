@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity(), IShatterActivity {
                     .addChildShatters(ShatterAChild())
             )
             .addShatter(ShatterB())
+            .addShatter(ShatterC())
     }
 
     override fun getShatterManager(): ShatterManager = shatterManager
@@ -61,6 +63,11 @@ class ShatterA : Shatter() {
         super.initView(view, intent)
         Log.i("MainActivity", "ShatterA initView")
         textView = view?.findViewById(R.id.textView)
+
+        //接口支持
+        view?.findViewById<Button>(R.id.button)?.setOnClickListener {
+            findShatter(IShowToast::class.java)?.showFuckingToast("show fucking toast")
+        }
     }
 }
 
@@ -77,5 +84,15 @@ class ShatterAChild : Shatter() {
 class ShatterB : Shatter() {
     fun showToast() {
         Toast.makeText(activity, "ShatterB showToast", Toast.LENGTH_SHORT).show()
+    }
+}
+
+interface IShowToast {
+    fun showFuckingToast(msg: String)
+}
+
+class ShatterC : Shatter(), IShowToast {
+    override fun showFuckingToast(msg: String) {
+        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
     }
 }

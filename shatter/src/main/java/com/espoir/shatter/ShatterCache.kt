@@ -1,7 +1,7 @@
 package com.espoir.shatter
 
 class ShatterCache {
-    private val cacheMap = hashMapOf<String, Shatter>()
+    val cacheMap = hashMapOf<String, Shatter>()
 
     fun putShatter(shatter: Shatter) {
         cacheMap[shatter.getTag()] = shatter
@@ -15,7 +15,7 @@ class ShatterCache {
         cacheMap.remove(tag)
     }
 
-    fun clear(){
+    fun clear() {
         cacheMap.clear()
     }
 }
