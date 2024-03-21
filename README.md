@@ -130,6 +130,8 @@ class ShowToastShatterBImpl :Shatter(),IShowToast{
 /** 比如 HaHaShatter 是两个页面都会用到的一个 Shatter */
 class HaHaShatter : Shatter {
     val showToast get() = findShatter(IShowToast::class.java)
+
+    showToat.show()
 }
 ```
 
