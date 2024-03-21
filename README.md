@@ -15,7 +15,7 @@ Shatter 的意义在于：
 [![](https://jitpack.io/v/EspoirX/ShatterManager.svg)](https://jitpack.io/#EspoirX/ShatterManager)
 ```groovy
 dependencies {
-   implementation 'com.github.EspoirX:ShatterManager:v1.0.0'
+   implementation 'com.github.EspoirX:ShatterManager:v1.0.3'
 }
 ```
 
@@ -82,9 +82,9 @@ Shatter 和 ShatterManager 中都提供有
 saveData 和  getSaveData 方法，方便存储临时数据，全局使用
 
 
-Shatter 复用之让 findShatter 支持接口：
+### Shatter 复用之让 findShatter 支持接口：
 
-如果 2 个页面中有某个 Shatter 直接大部分逻辑相同只是部分不一样，比如某个点击事件不一样，某个文案不一样等。
+如果 2 个页面中有某个 Shatter 之间大部分逻辑相同只是部分不一样，比如某个点击事件不一样，某个文案不一样等。
 这时候我想这两个 Shatter 是可以复用的，只需要将不一样的地方抽出来即可。  
 
 那么抽出来自然想到是接口，比如点击按钮，toast不一样：
