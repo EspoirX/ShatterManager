@@ -30,17 +30,6 @@ open class Shatter : ShatterLifecycleListener, LifecycleOwner {
     val lifecycleScope: LifecycleCoroutineScope
         get() = lifecycle.coroutineScope
 
-    internal val childShatters = mutableListOf<Shatter>()
-
-    fun addChildShatters(shatter: Shatter) = apply {
-        childShatters.add(shatter)
-    }
-
-    fun addChildShatters(containView: View, shatter: Shatter) = apply {
-        shatter.containView = containView
-        childShatters.add(shatter)
-    }
-
     @PublishedApi
     internal var viewBinding: ViewBinding? = null
 
@@ -64,15 +53,6 @@ open class Shatter : ShatterLifecycleListener, LifecycleOwner {
                 containView = view
             }
         }
-        onShatterCreate()
-    }
-
-    fun attachChildShatter() {
-        childShatters.forEach {
-            it.shatterManager = shatterManager
-            it.attachActivity(activity)
-            shatterManager?.shatterCache?.putShatter(it)
-        }
     }
 
     fun onAttachActivity(activity: AppCompatActivity?) {
@@ -83,7 +63,7 @@ open class Shatter : ShatterLifecycleListener, LifecycleOwner {
         this.activity.finish()
     }
 
-    private fun onShatterCreate() {
+    fun onShatterCreate() {
         onCreate(activity.intent)
         initView(containView, activity.intent)
         initData(activity.intent)
@@ -111,7 +91,6 @@ open class Shatter : ShatterLifecycleListener, LifecycleOwner {
     }
 
     open fun onShatterEvent(key: String, data: Any?) {
-        childShatters.forEach { it.onShatterEvent(key, data) }
     }
 
     open fun onCreate(intent: Intent?) {}
@@ -124,51 +103,40 @@ open class Shatter : ShatterLifecycleListener, LifecycleOwner {
     }
 
     override fun onNewIntent(intent: Intent?) {
-        childShatters.forEach { it.onNewIntent(intent) }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        childShatters.forEach { it.onSaveInstanceState(outState) }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        childShatters.forEach { it.onRestoreInstanceState(savedInstanceState) }
     }
 
     override fun onStart() {
-        childShatters.forEach { it.onStart() }
     }
 
     override fun onResume() {
-        childShatters.forEach { it.onResume() }
     }
 
     override fun onPause() {
-        childShatters.forEach { it.onPause() }
     }
 
     override fun onStop() {
-        childShatters.forEach { it.onStop() }
     }
 
     override fun onRestart() {
-        childShatters.forEach { it.onRestart() }
     }
 
     override fun onDestroy() {
-        childShatters.forEach { it.onDestroy() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        childShatters.forEach { it.onActivityResult(requestCode, resultCode, data) }
     }
 
     override fun enableOnBackPressed(): Boolean {
-        return childShatters.find { !it.enableOnBackPressed() } == null
+        return true
     }
 
     open fun onSelfDestroy() {
-        childShatters.forEach { it.onSelfDestroy() }
     }
 
     fun startActivity(intent: Intent) {

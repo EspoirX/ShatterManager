@@ -97,7 +97,6 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
         shatter.attachActivity(activity)
         shatters.add(shatter)
         shatterCache.putShatter(shatter)
-        shatter.attachChildShatter()
     }
 
     fun addShatter(shatter: Shatter) = apply {
@@ -105,13 +104,15 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
         shatter.attachActivity(activity)
         shatters.add(shatter)
         shatterCache.putShatter(shatter)
-        shatter.attachChildShatter()
+    }
+
+    fun start() {
+        shatters.forEach {
+            it.onShatterCreate()
+        }
     }
 
     fun remove(shatter: Shatter) {
-        shatters.find { it.getTag() == shatter.getTag() }?.childShatters?.forEach {
-            shatterCache.removeShatter(it.getTag())
-        }
         shatterCache.removeShatter(shatter.getTag())
         shatters.remove(shatter)
     }
@@ -136,7 +137,6 @@ class ShatterManager(internal val activity: AppCompatActivity) : LifecycleEventO
     fun destroy() {
         shatterCache.clear()
         dataSaveMap.clear()
-        shatters.forEach { it.childShatters.clear() }
         shatters.clear()
     }
 }

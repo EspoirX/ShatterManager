@@ -22,12 +22,11 @@ class MainActivity : AppCompatActivity(), IShatterActivity {
         setContentView(R.layout.activity_main)
 
         getShatterManager()
-            .addShatter(
-                R.id.shatterALayout, ShatterA()
-                    .addChildShatters(ShatterAChild())
-            )
+            .addShatter(R.id.shatterALayout, ShatterA())
+            .addShatter(ShatterAChild())
             .addShatter(ShatterB())
             .addShatter(ShatterC())
+            .start()
     }
 
     override fun getShatterManager(): ShatterManager = shatterManager
