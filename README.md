@@ -91,7 +91,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 ## Shatter用法
 
-Shatter 拥有和 Activity 相同的生命周期，你可以重现它们:onCreate() ,onStart() ... 等等。  
+Shatter 拥有和 Activity 相同的生命周期，你可以重写它们：onCreate() ,onStart() ... 等等。  
 在 onCreate() 里面，还分出了两个方法：initView()，initData() 。合理的重写对应方法去完成逻辑。  
 
 ### 1. 当 Fragment 来用
@@ -138,7 +138,7 @@ class ShatterA : Shatter() {
 
 val binding = findShatter(ShatterB::class.java).binding
 
-**事件通讯：**
+**事件通讯：**  
 除了主动获取对象，Shatter 还支持相互间的事件通讯（类似EventBus）。  
 可以通过 **fun sendShatterEvent(key: String, data: Any? = null)** 方法发送事件。  
 有两个参数， key 主要用于区分事件，data 就是事件带的数据，可为 null
@@ -151,7 +151,7 @@ val binding = findShatter(ShatterB::class.java).binding
 通过 getSaveData 方法去获取，这两个方法由 ShatterManager 管理，所以可以全局使用。
 
 ### 5. 代码复用和 findShatter 支持接口
-有时候我们可能遇到这种情况，两个 Shatter 直接大部分代码逻辑都相同，只是其中一小部分不一样。  
+有时候我们可能遇到这种情况，两个 Shatter 之间大部分代码逻辑都相同，只是其中一小部分不一样。  
 比如我们写了个评论的 Shatter，有两个页面都有评论，它们的逻辑都一样，区别只是调用的接口参数不一样等。  
 这时候 Shatter 应该是可以直接复用的，只需要将不一样的抽出来即可。  
 
